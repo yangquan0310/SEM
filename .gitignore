@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.gitignore
 *.Rproj
 *.qmd
 *.bib
