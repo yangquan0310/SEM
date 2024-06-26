@@ -1,0 +1,82 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "SEM",
+    "section": "",
+    "text": "Preface\nThis is book about some problems encountered in learning structural equations",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "The Issue-1 is about the equivalence of correlation and latent variable",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "issue1.html",
+    "href": "issue1.html",
+    "title": "2  Issue 1: The potential issues of introducing correlations in path analysis",
+    "section": "",
+    "text": "2.1 Equivalence of Correlation and Latent Variable\nResearchers often introduce correlation coefficients in pathways. In other words, they abstract a latent variable that predicts the correlated variables with the same loadings. For example, adding the correlation between variables BSA and BSV in a structural equation model is equivalent to creating a latent variable “perception” to predict BSA and BSV.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Issue 1: The potential issues of introducing correlations in path analysis</span>"
+    ]
+  },
+  {
+    "objectID": "issue1.html#data",
+    "href": "issue1.html#data",
+    "title": "2  Issue 1: The potential issues of introducing correlations in path analysis",
+    "section": "2.2 Data",
+    "text": "2.2 Data\n\n\n# A tibble: 6 × 8\n      pci     pr     bsv    bsa homophily authority  phint   paint\n    &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;\n1 -0.270  -0.464  0.0132 -0.175    -0.288    0.0452  0.134 -0.0209\n2  0.431   0.839 -0.223   0.600    -0.857    0.289  -0.718  0.242 \n3 -1.67   -2.09  -2.11   -2.76     -1.51    -1.17    3.15   2.46  \n4  0.0801  0.839 -2.35   -1.21      0.362    1.02    0.303  0.856 \n5  0.781   1.16   0.249   0.342     0.118    1.26    0.137  1.47  \n6  0.431  -0.464  0.249  -0.175     1.17    -0.199  -0.544  0.0921",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Issue 1: The potential issues of introducing correlations in path analysis</span>"
+    ]
+  },
+  {
+    "objectID": "issue1.html#model-defination",
+    "href": "issue1.html#model-defination",
+    "title": "2  Issue 1: The potential issues of introducing correlations in path analysis",
+    "section": "2.3 Model Defination",
+    "text": "2.3 Model Defination\n\npath_model_la&lt;-data_modmed%&gt;%\n  tidy_sem()%&gt;%\n  add_paths(\n    perception=~a*bsv+a*bsa,#define latent variable\n    pci~pr+b1*bsa+b2*bsv,\n    bsv~a1*pr+w1*phint+homophily,\n    bsa~a2*pr++w2*paint+authority\n            )\npath_fit_la&lt;-path_model_la%&gt;%\n  estimate_lavaan()\n\n\npath_model_rela&lt;-data_modmed%&gt;%\n  tidy_sem()%&gt;%\n  add_paths(\n    bsv~~bsa,#define correlation\n    pci~pr+b1*bsa+b2*bsv,\n    bsv~a1*pr+w1*phint+homophily,\n    bsa~a2*pr++w2*paint+authority\n            )\npath_fit_rela&lt;-path_model_rela%&gt;%\n  estimate_lavaan()",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Issue 1: The potential issues of introducing correlations in path analysis</span>"
+    ]
+  },
+  {
+    "objectID": "issue1.html#results",
+    "href": "issue1.html#results",
+    "title": "2  Issue 1: The potential issues of introducing correlations in path analysis",
+    "section": "2.4 Results",
+    "text": "2.4 Results\n\n2.4.1 latent variable\n\nlavaan::parameterestimates(path_fit_la)%&gt;%\n  filter(op%in%c(\"~\"))%&gt;%\n  knitr::kable(digits=3)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nlhs\nop\nrhs\nlabel\nest\nse\nz\npvalue\nci.lower\nci.upper\n\n\n\n\npci\n~\npr\n\n0.297\n0.047\n6.342\n0.000\n0.205\n0.389\n\n\npci\n~\nbsa\nb1\n0.336\n0.053\n6.381\n0.000\n0.233\n0.439\n\n\npci\n~\nbsv\nb2\n0.197\n0.050\n3.953\n0.000\n0.100\n0.295\n\n\nbsv\n~\npr\na1\n0.430\n0.039\n10.899\n0.000\n0.353\n0.507\n\n\nbsv\n~\nphint\nw1\n-0.037\n0.030\n-1.227\n0.220\n-0.096\n0.022\n\n\nbsv\n~\nhomophily\n\n0.302\n0.033\n9.024\n0.000\n0.236\n0.367\n\n\nbsa\n~\npr\na2\n0.472\n0.044\n10.671\n0.000\n0.386\n0.559\n\n\nbsa\n~\npaint\nw2\n-0.033\n0.030\n-1.111\n0.267\n-0.091\n0.025\n\n\nbsa\n~\nauthority\n\n0.243\n0.040\n6.057\n0.000\n0.165\n0.322\n\n\n\n\n\n\ngraph_sem(nodes=get_nodes(path_fit_la)%&gt;%select(name,shape),\n          edges=get_edges(path_fit_la)%&gt;%\n            dplyr::filter(str_detect(label_results,\"(.BY.)|(.ON.)|(bsv.WITH.bsa)\")),\n          layout=get_layout(\n            \"authority\", \"bsa\", \"\",\"\",\n            \"paint\", \"\", \"\", \"\",\n            \"pr\", \"\", \"pci\",\"perception\", \n            \"phint\", \"\", \"\", \"\",\n            \"homophily\", \"bsv\", \"\", \"\",\n            rows = 5)\n          )\n\n\n\n\n\n\n\n\n\n\n2.4.2 correlation\n\nlavaan::parameterestimates(path_fit_rela)%&gt;%\n  filter(op%in%c(\"~\"))%&gt;%\n  knitr::kable(digits=3)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nlhs\nop\nrhs\nlabel\nest\nse\nz\npvalue\nci.lower\nci.upper\n\n\n\n\npci\n~\npr\n\n0.297\n0.047\n6.342\n0.000\n0.205\n0.389\n\n\npci\n~\nbsa\nb1\n0.336\n0.053\n6.381\n0.000\n0.233\n0.439\n\n\npci\n~\nbsv\nb2\n0.197\n0.050\n3.953\n0.000\n0.100\n0.295\n\n\nbsv\n~\npr\na1\n0.430\n0.039\n10.899\n0.000\n0.353\n0.507\n\n\nbsv\n~\nphint\nw1\n-0.037\n0.030\n-1.227\n0.220\n-0.096\n0.022\n\n\nbsv\n~\nhomophily\n\n0.302\n0.033\n9.024\n0.000\n0.236\n0.367\n\n\nbsa\n~\npr\na2\n0.472\n0.044\n10.671\n0.000\n0.386\n0.559\n\n\nbsa\n~\npaint\nw2\n-0.033\n0.030\n-1.111\n0.267\n-0.091\n0.025\n\n\nbsa\n~\nauthority\n\n0.243\n0.040\n6.057\n0.000\n0.165\n0.322\n\n\n\n\n\n\ngraph_sem(nodes=get_nodes(path_fit_rela)%&gt;%select(name,shape),\n          edges=get_edges(path_fit_rela)%&gt;%\n            dplyr::filter(str_detect(label_results,\"(.BY.)|(.ON.)|(bsv.WITH.bsa)\")),\n          layout=get_layout(\n            \"authority\", \"bsa\", \"\",\"\",\n            \"paint\", \"\", \"\", \"\",\n            \"pr\", \"\", \"pci\",\"\", \n            \"phint\", \"\", \"\", \"\",\n            \"homophily\", \"bsv\", \"\", \"\",\n            rows = 5)\n          )",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Issue 1: The potential issues of introducing correlations in path analysis</span>"
+    ]
+  },
+  {
+    "objectID": "issue1.html#discussion",
+    "href": "issue1.html#discussion",
+    "title": "2  Issue 1: The potential issues of introducing correlations in path analysis",
+    "section": "2.5 Discussion",
+    "text": "2.5 Discussion\nSince introducing correlations is equivalent to latent variables, this process effectively splits the variables BSA and BSV into two parts: common factors and residuals. Considering that both BSA and BSV represent the perceptual processes related to brands, when incorporating a variable ‘pr’ to predict both BSA and BSV and simultaneously introducing a correlation between BSA and BSV, ‘pr’ only predicts the residuals of BSA and BSV while eliminating the shared perceptual factor originally present in both BSA and BSV. Therefore, caution should be exercised when introducing correlations between variables.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Issue 1: The potential issues of introducing correlations in path analysis</span>"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Author：Yang Quan\nMinistry of Psychology, Central China Normal University\nyangquan0310@163.com",
+    "crumbs": [
+      "About"
+    ]
+  }
+]
